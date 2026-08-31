@@ -38,7 +38,5 @@ desktop.ini
 *.swp
 *.swo
 
-# ── Project docs excluded from the repo ───────────────────────────
-SKILL.md
-project-structure.md
-genoroot-intake-skill/
+# ── pytest cache inside genoroot-intake/ ──────────────────────────
+.pytest_cache/
