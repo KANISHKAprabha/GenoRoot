@@ -1,0 +1,9 @@
+# ── Challenge spec — not for the repo ─────────────────────────────
+SKILL.md
+
+# ── references/ — only schema.json ships; the rest is working notes ─
+references/serializers.py
+references/project-structure.md
+
+# ── pytest caches at repo root ─────────────────────────────────────
+.pytest_cache/

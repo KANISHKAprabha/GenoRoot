@@ -1,0 +1,208 @@
+{
+  "form": "GenoRoot Hair & Scalp Intake",
+  "sections": [
+    {
+      "id": "meta",
+      "title": "Patient Info",
+      "note": "Not part of the 16 required clinical fields — required only to correctly branch femaleOnly questions in Section B. Disclosed addition #1.",
+      "questions": [
+        {
+          "n": 0,
+          "key": "sex",
+          "type": "single",
+          "options": ["Male", "Female"]
+        }
+      ]
+    },
+    {
+      "id": "A",
+      "title": "Personal & Family Hair Loss History",
+      "questions": [
+        { "n": 1, "key": "age_hair_loss_began", "type": "number" },
+        {
+          "n": 2,
+          "key": "duration",
+          "type": "single",
+          "options": ["Less than 6 months", "6-12 months", "Over a year"],
+          "note": "Not inferable from age_hair_loss_began without also knowing current age; even then, confirm both explicitly rather than computing one from the other."
+        },
+        {
+          "n": 3,
+          "key": "family_history",
+          "type": "multi",
+          "options": [
+            "Father had hair loss",
+            "Mother had hair loss",
+            "Siblings with thinning or baldness",
+            "No known family history"
+          ],
+          "note": "Mutual exclusion: 'No known family history' clears/disables other selections and vice versa."
+        },
+        {
+          "n": 4,
+          "key": "pattern",
+          "type": "multi",
+          "options": [
+            "Receding hairline",
+            "Thinning at crown",
+            "Widening part line",
+            "Diffuse thinning",
+            "Patchy loss",
+            "Sudden excessive shedding"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "B",
+      "title": "Hormonal & Health Influences",
+      "questions": [
+        {
+          "n": 5,
+          "key": "diagnosed_conditions",
+          "type": "multi",
+          "options": ["PCOS/PCOD", "Thyroid disorder", "Diabetes", "Autoimmune disease", "Anemia", "None"],
+          "note": "Mutual exclusion: 'None' clears/disables other selections and vice versa. This field gates the hormonal follow-up screen, but NOT fields 8/9 (see note on those)."
+        },
+        {
+          "n": 6,
+          "key": "menstrual_cycle",
+          "type": "single",
+          "options": ["Regular", "Irregular", "Menopausal", "Not applicable"],
+          "femaleOnly": true,
+          "note": "Required when sex=Female, must be null when sex=Male."
+        },
+        {
+          "n": 7,
+          "key": "pregnancy_related",
+          "type": "single",
+          "options": ["Currently pregnant", "Postpartum <1 year", "Not applicable"],
+          "femaleOnly": true,
+          "note": "Required when sex=Female, must be null when sex=Male."
+        },
+        {
+          "n": 8,
+          "key": "adult_acne_oily_skin",
+          "type": "yesno",
+          "note": "UNIVERSAL — not femaleOnly, not gated by diagnosed_conditions. Always shown to every patient. Do not nest under a PCOS branch."
+        },
+        {
+          "n": 9,
+          "key": "excess_body_facial_hair",
+          "type": "yesno",
+          "note": "UNIVERSAL — not femaleOnly, not gated by diagnosed_conditions. Always shown to every patient. Do not nest under a PCOS branch."
+        }
+      ]
+    },
+    {
+      "id": "C",
+      "title": "Lifestyle & Environmental Triggers",
+      "questions": [
+        {
+          "n": 10,
+          "key": "past_6_months",
+          "type": "multi",
+          "options": [
+            "Crash dieting or major weight loss",
+            "High stress or emotional trauma",
+            "Fever with illness (COVID, Dengue, Typhoid)",
+            "Recent surgery",
+            "Change in location/water/air quality",
+            "None of these apply"
+          ],
+          "note": "Disclosed addition #2: 'None of these apply' added so an intentional empty answer is distinguishable from an unanswered question. Selecting it stores an empty array [], not the literal string. UI must set a touched flag before allowing Continue."
+        },
+        {
+          "n": 11,
+          "key": "habits",
+          "type": "table",
+          "rows": [
+            {
+              "key": "smoking",
+              "type": "yesno",
+              "followup": {
+                "key": "smoking_severity",
+                "type": "single",
+                "options": ["Mild <5/day", "Moderate 5-10/day", "Severe >10/day"]
+              },
+              "note": "Paired-null rule: smoking_severity required iff smoking=true, must be null iff smoking=false."
+            },
+            { "key": "alcohol", "type": "yesno" },
+            { "key": "hard_water", "type": "yesno", "note": "Comprehension risk for older patients — pair with an inline hint, do not add an option the schema doesn't have." },
+            {
+              "key": "hair_wash_frequency",
+              "type": "single",
+              "options": ["Daily", "Alternate Days", "Weekly"]
+            },
+            {
+              "key": "heating_tools_styling_chemicals",
+              "type": "yesno",
+              "note": "Compound question (heat tools OR chemical treatments) — kept as-is per schema; word UI copy to make the 'either' framing honest rather than splitting the field."
+            },
+            {
+              "key": "salon_treatments",
+              "type": "yesno",
+              "followup": { "key": "salon_treatment_detail", "type": "text" },
+              "note": "Paired-null rule: salon_treatment_detail required iff salon_treatments=true, must be null iff salon_treatments=false."
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "D",
+      "title": "Current Hair Care & Treatments",
+      "questions": [
+        {
+          "n": 12,
+          "key": "products",
+          "type": "table",
+          "rows": ["OTC/Medicated Shampoos", "Hair Oils/Serums", "Topical Minoxidil", "Oral Minoxidil", "Supplements"],
+          "columns": [
+            { "key": "used", "type": "bool" },
+            { "key": "duration", "type": "single", "options": ["<3mo", "3-6mo", ">6mo"] },
+            { "key": "helped", "type": "yesno" },
+            { "key": "side_effects", "type": "yesno" }
+          ],
+          "note": "Paired-null rule per row: duration/helped/side_effects all required iff used=true, all null iff used=false. Unselected rows still get a full entry with used=false — never omitted."
+        },
+        {
+          "n": 13,
+          "key": "procedures",
+          "type": "table",
+          "rows": [
+            { "key": "PRP/GFC/iPRF" },
+            { "key": "Stem Cells/Exosomes" },
+            { "key": "Hair Transplant" },
+            {
+              "key": "Other",
+              "followup": { "key": "other_detail", "type": "text" },
+              "note": "Disclosed addition #3: other_detail is additive beyond the original schema, added so an 'Other' procedure isn't stored as unlabeled clinical data. Required only when this row's done=true."
+            }
+          ],
+          "columns": [
+            { "key": "done", "type": "bool" },
+            { "key": "sessions", "type": "single", "options": ["1-3", "4-6", ">6"] },
+            { "key": "helped", "type": "yesno" }
+          ],
+          "note": "Paired-null rule per row: sessions/helped required iff done=true, null iff done=false. No side_effects column exists here — never use this section as an inference source for field 14."
+        },
+        {
+          "n": 14,
+          "key": "past_treatment_side_effects",
+          "type": "yesno",
+          "followup": { "key": "describe", "type": "text" },
+          "note": "The yes/no half may be pre-filled (editable) from field 12's side_effects flags if any product had side_effects=true — this is summarizing already-collected data. The 'describe' text must NEVER be inferred or fabricated; always collected fresh from the patient."
+        }
+      ]
+    },
+    {
+      "id": "E",
+      "title": "Sample Collection & Consent",
+      "questions": [
+        { "n": 15, "key": "sample_type", "type": "single", "options": ["Saliva", "Blood", "Either"] },
+        { "n": 16, "key": "consent", "type": "yesno", "note": "Never inferred, never pre-checked. Must be explicitly true to allow submission." }
+      ]
+    }
+  ]
+}

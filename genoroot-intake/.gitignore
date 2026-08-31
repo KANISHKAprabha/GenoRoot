@@ -1,0 +1,44 @@
+# ── Sensitive / secrets ───────────────────────────────────────────
+backend/.env
+frontend/.env
+frontend/.env.local
+frontend/.env.*.local
+
+# ── Python / Django (backend/) ────────────────────────────────────
+__pycache__/
+*.py[cod]
+*.pyo
+*.pyd
+*.egg-info/
+*.egg
+.eggs/
+dist/
+build/
+.venv/
+venv/
+db.sqlite3
+*.log
+.coverage
+htmlcov/
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+
+# ── Node / Vite (frontend/) ───────────────────────────────────────
+frontend/node_modules/
+frontend/dist/
+frontend/.vite/
+
+# ── OS / IDE noise ────────────────────────────────────────────────
+.DS_Store
+Thumbs.db
+desktop.ini
+.idea/
+.vscode/
+*.swp
+*.swo
+
+# ── Project docs excluded from the repo ───────────────────────────
+SKILL.md
+project-structure.md
+genoroot-intake-skill/
